@@ -12,15 +12,25 @@
                   <el-input type="textarea" v-model="form.bulletin" :rows="6"></el-input>
                 </el-form-item>
                 <el-form-item label="店铺头像">
-                  <el-image
+                  <el-upload
+                    class="avatar-uploader"
+                    :action="serveIP+'/shop/upload'"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload">
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  </el-upload>
+                  <!-- <el-image
                   style="width: 100px; height: 100px"
-                  :src="form.avatar"></el-image>
+                  :src="form.avatar"></el-image> -->
                 </el-form-item>
                  <el-form-item label="店铺图片">
                   <el-upload
-                  action="http://localhost:5000/shop/upload"
+                  :action="serveIP+'/shop/upload'"
                   list-type="picture-card"
-                  :on-success='success'>
+                  :on-success='success'
+                  :file-list="fileList">
                   <i class="el-icon-plus"></i>
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible">
@@ -56,7 +66,7 @@
                   range-separator="至"
                   start-placeholder="开始时间"
                   end-placeholder="结束时间"
-                  placeholder="选择时间范围">
+                  >
                 </el-time-picker>
               </el-form>
             </div>
@@ -65,7 +75,7 @@
 
 <script>
   
-  import{Api_getshopinfo,Api_editshop} from '../api/apis'
+  import{Api_getshopinfo,Api_editshop,serveIP} from '../api/apis'
   export default {
         data(){
             return{
@@ -83,7 +93,10 @@
               pics:[],
               date:[],
             },
-              dialogVisible: false
+            imageUrl:'',
+            dialogVisible: false,
+            serveIP:serveIP,
+            fileList:[]
             }
         },
         methods:{
@@ -91,13 +104,33 @@
           getinfo(){
             Api_getshopinfo().then((res)=>{
               this.form=res.data.data
+              // console.log(res.data.data.avatar)
+              this.imageUrl=this.serveIP+"/upload/shop/"+res.data.data.avatar
+              this.fileList=res.data.data.pics.map((url)=>{return this.serveIP+"/upload/shop/"+url})
+              this.fileList=this.fileList.map((i)=>{return ("{"+'url: '+"'"+ i +"'"+"}")})
+              this.fileList=this.fileList.map((i)=>{return (eval("(" + i + ")"))})
             })
           },
-          success(res){
+           handleAvatarSuccess(res, file) {
+            this.imageUrl = URL.createObjectURL(file.raw);
             console.log(res.imgUrl)
+            this.form.avatar=res.imgUrl
+            console.log(this.form.avatar)
+          },
+          beforeAvatarUpload(file) {
+            const isJPG = file.type === 'image/jpeg';
+            const isLt2M = file.size / 1024 / 1024 < 2;
+
+            if (!isJPG) {
+              this.$message.error('上传头像图片只能是 JPG 格式!');
+            }
+            if (!isLt2M) {
+              this.$message.error('上传头像图片大小不能超过 2MB!');
+            }
+            return isJPG && isLt2M;
+          },
+          success(res){
             this.form.pics.push(res.imgUrl)
-            console.log(this.form.pics)
-            // this.imageUrl = URL.createObjectURL(file.raw);
           },
           onSubmit() {
             this.form={
@@ -171,6 +204,29 @@
             .el-checkbox-group{
                 margin-top: 20px;
                 margin-left: 20px;
+            }
+            .avatar-uploader .el-upload {
+              border: 1px dashed #d9d9d9;
+              border-radius: 6px;
+              cursor: pointer;
+              position: relative;
+              overflow: hidden;
+            }
+            .avatar-uploader .el-upload:hover {
+              border-color: #409EFF;
+            }
+            .avatar-uploader-icon {
+              font-size: 28px;
+              color: #8c939d;
+              width: 178px;
+              height: 178px;
+              line-height: 178px;
+              text-align: center;
+            }
+            .avatar {
+              width: 178px;
+              height: 178px;
+              display: block;
             }
           // .el-button{
           //       margin-top: 20px;

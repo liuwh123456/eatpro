@@ -175,6 +175,7 @@
             margin-top: 1%;
             margin-left: 1%;
             padding-top: 20px;
+            padding-bottom: 20px;
             padding-left: 20px;
            h4{
                 height: 50px;

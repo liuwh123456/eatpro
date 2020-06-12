@@ -1,5 +1,6 @@
 import axios from 'axios'
-axios.defaults.baseURL='http://localhost:5000'
+export const serveIP='http://127.0.0.1:5000'
+axios.defaults.baseURL=serveIP
 //登录
 export const Api_login=(params)=>axios.post('/users/checkLogin',params)
 // 添加账户

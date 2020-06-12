@@ -97,9 +97,9 @@
                     >
                     <p>商品名称:<el-input v-model="edit.name"></el-input></p>
                     <p>商品分类:<el-input v-model="edit.category"></el-input></p>
-                    <p>商品价格:<el-input v-model="edit.category"></el-input></p>
-                    <p>商品图片地址:<el-input v-model="edit.category"></el-input></p>
-                    <p>商品描述:<el-input v-model="edit.category"></el-input></p>
+                    <p>商品价格:<el-input v-model="edit.price"></el-input></p>
+                    <p>商品图片地址:<el-input v-model="edit.imgUrl"></el-input></p>
+                    <p>商品描述:<el-input v-model="edit.goodsDesc"></el-input></p>
                     <span slot="footer" class="dialog-footer">
                       <el-button @click="dialogVisible = false">取 消</el-button>
                       <el-button type="primary" @click="editgoods">确 定</el-button>
@@ -110,7 +110,7 @@
 </template>
 
 <script>
-    import{Api_getgoodslist,Api_Delgoods,Api_editgoods} from '../../api/apis'
+    import{Api_getgoodslist,Api_Delgoods,Api_editgoods,serveIP} from '../../api/apis'
     export default {
         data(){
             return{
@@ -119,7 +119,8 @@
               tableData:[],
               restotal:1,
               dialogVisible:false,
-              edit:{}
+              edit:{},
+              serveIP:serveIP
             }
         },
         methods:{
@@ -139,7 +140,10 @@
                 let times=d.getFullYear() + '-' + month + '-' + day + ' ' + hours + ':' + min + ':' + sec;
                 return times
               }
-
+              for(let i of this.tableData){
+                  i.imgUrl=this.serveIP+"/upload/imgs/goods_img/"+i.imgUrl
+                  console.log(i.imgUrl)
+              }
               for(let i of this.tableData){
                 i.ctime=resolvingDate(i.ctime)
               }
@@ -196,7 +200,8 @@
             background-color: white;
             margin-top: 1%;
             margin-left: 1%;
-             padding-top: 20px;
+            padding-top: 20px;
+            padding-bottom: 20px;
             padding-left: 20px;
             h4{
                 height: 50px;

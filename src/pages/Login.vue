@@ -1,9 +1,9 @@
 <template>
   <div class="main">
-    <h1>登录</h1>
+    <h1>欢迎使用伊特后台管理系统</h1>
     <el-input v-model="acc_input" placeholder="请输入用户名"></el-input>
-    <el-input placeholder="请输入密码" v-model="pwd_input" show-password></el-input>
-    <el-button type="info" round @click="login">登录</el-button>
+    <el-input placeholder="请输入密码" v-model="pwd_input" show-password @keyup.enter.native="login"></el-input>
+    <el-button type="info" round @click="login" >登录</el-button>
   </div>
 </template>
 
@@ -28,7 +28,6 @@ export default {
             localStorage.account=this.acc_input
             localStorage.id=res.data.id
             localStorage.role=res.data.role
-            console.log(localStorage.token,localStorage.id,localStorage.role,localStorage.account)
             this.$message({message: '恭喜你，登录成功',type: 'success'})
             setTimeout(()=>{
                 this.$router.push('/home/index')
@@ -52,7 +51,7 @@ export default {
     height: 100%;
     width: 100%;
     background-color:#adc2b5;
-    padding-top: 30px;
+    padding-top: 130px;
   }
   h1{
     color: #829D93;

@@ -32,15 +32,13 @@
 
 <style lang="less" scoped>
     .main{
-        height: 100%;
-        width: 100%;
         .content{
-            width:98%;
-            height: 90%;
+            height: 100%;
             background-color: white;
             margin-top: 1%;
             margin-left: 1%;
             padding-top:20px ;
+            padding-bottom:20px ;
             padding-left: 20px;
             .el-button{
                 margin-left: 20px;
